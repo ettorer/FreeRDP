@@ -38,6 +38,7 @@ set(FREERDP_UTILS_SRCS
 	rail.c
 	rect.c
 	registry.c
+	rdpfile.c
 	semaphore.c
 	signal.c
 	sleep.c
