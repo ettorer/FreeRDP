@@ -26,6 +26,7 @@
 #include <freerdp/utils/print.h>
 #include <freerdp/utils/memory.h>
 #include <freerdp/utils/args.h>
+#include <freerdp/utils/rdpfile.h>
 
 /**
  * Parse command-line arguments and update rdpSettings members accordingly.
@@ -651,7 +652,8 @@ int freerdp_parse_args(rdpSettings* settings, int argc, char** argv,
 			{
 				/* Port number is cut off and used if exactly one : in the string */
 				settings->hostname = xstrdup(argv[index]);
-				if ((p = strchr((char*)settings->hostname, ':')) && !strchr(p + 1, ':'))
+				if ((p = strchr((char*)settings->hostname, ':')) && !strchr(p + 1, ':') &&
+            !is_rdp_config_file(settings->hostname))
 				{
 					*p = 0;
 					settings->port = atoi(p + 1);
@@ -678,6 +680,9 @@ int freerdp_parse_args(rdpSettings* settings, int argc, char** argv,
 
 			if (settings->disable_theming)
 				settings->performance_flags |= PERF_DISABLE_THEMING;
+            
+      if(is_rdp_config_file(settings->hostname))
+        rdp_config_file_parse(settings, plugin_callback, plugin_user_data, ui_callback, ui_user_data);
 
 			return index;
 		}
